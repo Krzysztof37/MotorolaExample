@@ -32,4 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 
-.systemstructure
+/.systemstructure.txt/
+.systemstructure.txt
