@@ -1,4 +1,4 @@
-package motorola.example.model;
+package motorola.example.app;
 
 
 import jakarta.persistence.Entity;
@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.util.List;
+
 @Data
 @Entity
 public class Device {
@@ -16,11 +18,11 @@ public class Device {
     @Id
     @GeneratedValue
     private long id;
-    private String cfgFiles;
+    private List<String> cfgFiles;
     private String enabled;
     private String hostname;
     private String ipAddress;
-    private String loadConditions;
+    private List<String> loadConditions;
     private String model;
     private String networkingFunction;
     private String path;

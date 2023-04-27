@@ -1,15 +1,13 @@
-package motorola.example.controller;
+package motorola.example.app;
 
 import com.google.gson.Gson;
-import motorola.example.model.Device;
-import motorola.example.utils.DeviceService;
-import motorola.example.utils.DeviceRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +24,10 @@ public class DeviceController {
     @GetMapping("/getdevices")
     public String getDevices() throws FileNotFoundException {
         DeviceService deviceService = new DeviceService();
+
         List<Device> listOfDevices = deviceRepository.findAll();
         Gson gson = new Gson();
+
 
         return gson.toJson(listOfDevices);
     }
@@ -53,7 +53,7 @@ public class DeviceController {
 
 
     @GetMapping("/savedevices")
-    public String saveDevices() throws FileNotFoundException {
+    public String saveDevices() throws IOException {
         DeviceService deviceService = new DeviceService();
         List<Device> listOfDevices = deviceService.getInfoFromFile();
         for(Device device : listOfDevices){

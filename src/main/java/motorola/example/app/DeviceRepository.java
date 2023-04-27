@@ -1,6 +1,6 @@
-package motorola.example.utils;
+package motorola.example.app;
 
-import motorola.example.model.Device;
+import motorola.example.app.Device;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

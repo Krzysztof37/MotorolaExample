@@ -1,4 +1,4 @@
-import motorola.example.utils.DeviceService;
+import motorola.example.app.DeviceService;
 
 import java.io.FileNotFoundException;
 
