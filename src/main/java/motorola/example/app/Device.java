@@ -15,11 +15,13 @@ import java.util.List;
 @Entity
 public class Device {
 
-    @Id
-    @GeneratedValue
-    private long id;
+//    @Id
+//    @GeneratedValue
+//    private long id;
     private List<String> cfgFiles;
     private String enabled;
+
+    @Id
     private String hostname;
     private String ipAddress;
     private List<String> loadConditions;

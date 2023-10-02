@@ -56,11 +56,12 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-			<version>2.0.2</version>
-		</dependency>
+<!--		Ponizsza dokumentacja zwraca tylko Jsona(jedynie tekst)-->
+<!--		<dependency>-->
+<!--			<groupId>org.springdoc</groupId>-->
+<!--			<artifactId>springdoc-openapi-starter-webmvc-api</artifactId>-->
+<!--			<version>2.0.2</version>-->
+<!--		</dependency>-->
 
 
 		<dependency>
@@ -68,6 +69,17 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>8.0.0.Final</version>
 		</dependency>
+
+
+
+<!--		ponizsza dependencja dziala dla springboota 3 (swagger)-->
+<!--		http://localhost:8080/swagger-ui/index.html -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+
 
 
 	</dependencies>
