@@ -3,11 +3,10 @@ package motorola.example.app;
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -24,45 +23,38 @@ public class DeviceController {
         this.deviceRepository = deviceRepository;
     }
 
-    @GetMapping("/getdevices")
-    public String getDevices() throws FileNotFoundException {
-        DeviceService deviceService = new DeviceService();
-
-        List<Device> listOfDevices = deviceRepository.findAll();
-        Gson gson = new Gson();
-
-
-        return gson.toJson(listOfDevices);
+    @GetMapping("/getDevices")
+    public List<Device> getDevices() throws FileNotFoundException {
+        return deviceRepository.findAll();
     }
 
 
 
-    @GetMapping("/getDevicesByEnabled")
-    public String getDevicesByEnabled(@RequestParam(name = "enabled")String enabled){
+    @GetMapping("/getDevicesByState")
+    public List<Device> getDevicesByState(@RequestParam(name = "enabled")String enabled){
         if(enabled.equals("true") || enabled.equals("false")) {
-            List<Device> devices = deviceRepository.findAllByEnabled(enabled);
-            Gson gson = new Gson();
-            return gson.toJson(devices);
+           List<Device> devices = deviceRepository.findAllByEnabled(enabled);
+           return devices;
         }
-        return "Use 'false' or 'true'";
+        return List.of();
     }
 
-    @GetMapping("/getDevicesByIp")
-    public String getDevicesByIp(@RequestParam(name = "ip")String ip){
-        Device device = deviceRepository.findByIpAddress(ip);
-        return device.toString();
+    @GetMapping("/getDeviceByIp")
+    public Optional<Device> getDevicesByIp(@RequestParam(name = "ip")String ip){
+        Optional<Device> device = Optional.ofNullable(deviceRepository.findByIpAddress(ip));
+        return device;
     }
 
-
-    @GetMapping("/savedevices")
-    public String saveDevices() throws IOException {
+// nie dziala z zalaczaniem pliku, walidator swagera nie przepuszcza, mozna wrocic do starego rozwiazania czyli przekazanie sciezki do pliku
+    @PostMapping("/saveDevices")
+    public List<Device> saveDevices(@RequestParam(name = "path")String path) throws IOException {
         DeviceService deviceService = new DeviceService();
-        List<Device> listOfDevices = deviceService.getInfoFromFile();
+        List<Device> listOfDevices = deviceService.getInfoFromFile(path);
         for(Device device : listOfDevices){
             deviceRepository.save(device);
-
         }
-        return "Devices saved";
+
+        return listOfDevices;
     }
 
 
@@ -79,19 +71,25 @@ public class DeviceController {
         return "Device deleted hostname: "+hostname;
     }
 
-    @PutMapping("/updateEnabled")
-    public String updateEnabled(@RequestParam(name = "hostname")String hostname, @RequestParam(name = "enabled") String enabled){
+    @PutMapping("/updateState")
+    public Optional<Device> updateEnabled(@RequestParam(name = "hostname")String hostname, @RequestParam(name = "enabled") String enabled){
         Optional<Device> device = Optional.ofNullable(deviceRepository.findByHostname(hostname));
-        if(device.toString().equals("Optional.empty")){
-            return "Device does not exist";
-        }
 
         if(enabled.equals("true") || enabled.equals("false")){
             device.ifPresent(e -> e.enabled(enabled));
             device.ifPresent(e -> deviceRepository.save(device.get()));
-            return "Device "+hostname+" updated";
+            return device;
         }
 
-        return "Use 'false' or 'true'";
+        return device;
     }
+
+
+    @GetMapping("/getDeviceByHostname")
+    public Optional<Device> getDeviceByHostname(String hostname){
+        Optional<Device> device = Optional.ofNullable(deviceRepository.findByHostname(hostname));
+        return device;
+    }
+
+
 }
