@@ -80,6 +80,11 @@
 			<version>2.0.2</version>
 		</dependency>
 
+<!--		//Przyda mi sie do pisania testów ??-->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+		</dependency>
 
 
 	</dependencies>

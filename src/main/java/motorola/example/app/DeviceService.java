@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import motorola.example.app.Device;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.zip.ZipInputStream;
 public class DeviceService {
 
 
-public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
     File destFile = new File(destinationDir, zipEntry.getName());
 
     String destDirPath = destinationDir.getCanonicalPath();
@@ -28,11 +29,12 @@ public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOExce
     return destFile;
 }
 
-    public void unZip(String path) throws IOException {
+    private void unZip(MultipartFile file) throws IOException {
         try {
 
             File destDir = new File("unZipContent");
-            ZipInputStream zis = new ZipInputStream(new FileInputStream(path));
+            //Buffered Stream jest potrzebny aby w łatwy sposób odczytać zawartość multipart file
+            ZipInputStream zis = new ZipInputStream(new BufferedInputStream(file.getInputStream()));
             ZipEntry zipEntry = new ZipEntry(zis.getNextEntry());
             byte[] buffer = new byte[1024];
 
@@ -63,8 +65,8 @@ public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOExce
             System.out.println("file not found");
         }
     }
-    public List<Device> getInfoFromFile(String path) throws IOException {
-       unZip(path);
+    public List<Device> getInfoFromFile(MultipartFile file) throws IOException {
+       unZip(file);
         try {
             FileReader fileReader = new FileReader("unZipContent/systemstructure.txt");
             JsonReader reader = new JsonReader(fileReader);

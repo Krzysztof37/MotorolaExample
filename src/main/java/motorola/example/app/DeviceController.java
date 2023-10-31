@@ -2,6 +2,7 @@ package motorola.example.app;
 
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,16 +41,17 @@ public class DeviceController {
     }
 
     @GetMapping("/getDeviceByIp")
-    public Optional<Device> getDevicesByIp(@RequestParam(name = "ip")String ip){
+    public Optional<Device> getDevicesByIp(@RequestParam(name = "ip")String ip)  {
         Optional<Device> device = Optional.ofNullable(deviceRepository.findByIpAddress(ip));
+        //.orElseThrow();
         return device;
     }
 
 // nie dziala z zalaczaniem pliku, walidator swagera nie przepuszcza, mozna wrocic do starego rozwiazania czyli przekazanie sciezki do pliku
-    @PostMapping("/saveDevices")
-    public List<Device> saveDevices(@RequestParam(name = "path")String path) throws IOException {
+    @PostMapping(value = "/saveDevices",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Device> saveDevices(@RequestParam() MultipartFile file) throws IOException {
         DeviceService deviceService = new DeviceService();
-        List<Device> listOfDevices = deviceService.getInfoFromFile(path);
+        List<Device> listOfDevices = deviceService.getInfoFromFile(file);
         for(Device device : listOfDevices){
             deviceRepository.save(device);
         }
@@ -68,11 +70,11 @@ public class DeviceController {
         deviceRepository.deleteByHostname(hostname);
 
 
-        return "Device deleted hostname: "+hostname;
+        return "Device deleted, hostname: "+hostname;
     }
 
-    @PutMapping("/updateState")
-    public Optional<Device> updateEnabled(@RequestParam(name = "hostname")String hostname, @RequestParam(name = "enabled") String enabled){
+    @PutMapping("/updateDeviceState")
+    public Optional<Device> updateDeviceState(@RequestParam(name = "hostname")String hostname, @RequestParam(name = "enabled") String enabled){
         Optional<Device> device = Optional.ofNullable(deviceRepository.findByHostname(hostname));
 
         if(enabled.equals("true") || enabled.equals("false")){
@@ -83,7 +85,6 @@ public class DeviceController {
 
         return device;
     }
-
 
     @GetMapping("/getDeviceByHostname")
     public Optional<Device> getDeviceByHostname(String hostname){
